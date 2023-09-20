@@ -27,42 +27,12 @@ class SaveToMySQLPipeLine():
 
         self.cur = self.conn.cursor()
 
-        self.cur.execute("""
-        CREATE TABLE IF NOT EXISTS news(
-            id int NOT NULL auto_increment,
-            title text,
-            image VARCHAR,
-            url VARCHAR,
-            text_post text
-
-        )
-        
-        """)
+        self.cur.execute("CREATE TABLE IF NOT EXISTS news(id int NOT NULL PRIMARY KEY AUTO_INCREMENT, title TEXT, image TEXT, url TEXT, text TEXT)")
 
 
     def process_item(self, item, spider):
-        self.cur.execute("""insert into news(
-            title,
-            image,
-            url,
-            text
-        ) values(
-            %s,
-            %s,
-            %s,
-            %s
-        )
+        self.cur.execute("INSERT INTO news VALUES(NULL, %s, %s, %s, %s)" , (item['title'], item['image'], item['url'], item['text']))
         
-        """, (
-            item['title'],
-            item['image'],
-            item['url'],
-            item['text'],
-
-        )
-        
-        )
-
         self.conn.commit()
         return item
 
